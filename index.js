@@ -25,9 +25,9 @@ const getMetrics = (request, response) => {
 const addMetric = (request, response) => {
   const {url, TTFB,  FCP, domLoad, windowLoad, dateTime} = request.body
 
-  if (!request.header('apiKey') || request.header('apiKey') !== process.env.API_KEY) {
+  /* if (!request.header('apiKey') || request.header('apiKey') !== process.env.API_KEY) {
     return response.status(401).json({status: 'error', message: 'Unauthorized.'})
-  }
+  } */
 
   pool.query(
     'INSERT INTO perf_metrics (url, TTFB, FCP, domLoad, windowLoad, dateTime) VALUES ($1, $2, $3, $4, $5, $6)',
