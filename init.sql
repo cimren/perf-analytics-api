@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS perf_metrics;
 
 CREATE TABLE perf_metrics (
   ID SERIAL PRIMARY KEY, 
-  url VARCHAR(255) NOT NULL, 
+  url VARCHAR(255), 
   TTFB VARCHAR(255), 
   FCP VARCHAR(255), 
   domLoad VARCHAR(255), 
