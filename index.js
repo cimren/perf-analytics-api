@@ -1,5 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const helmet = require('helmet')
+const compression = require('compression')
 const cors = require('cors')
 const {pool} = require('./config')
 
@@ -7,6 +9,8 @@ const app = express()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(compression())
+app.use(helmet())
 app.use(cors())
 
 const getMetrics = (request, response) => {
@@ -20,6 +24,10 @@ const getMetrics = (request, response) => {
 
 const addMetric = (request, response) => {
   const {url, TTFB,  FCP, domLoad, windowLoad, dateTime} = request.body
+
+  if (!request.header('apiKey') || request.header('apiKey') !== process.env.API_KEY) {
+    return response.status(401).json({status: 'error', message: 'Unauthorized.'})
+  }
 
   pool.query(
     'INSERT INTO perf_metrics (url, TTFB, FCP, domLoad, windowLoad, dateTime) VALUES ($1, $2, $3, $4, $5, $6)',
