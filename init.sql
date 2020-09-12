@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS perf_metrics;
+
 CREATE TABLE perf_metrics (
   ID SERIAL PRIMARY KEY, 
   url VARCHAR(255) NOT NULL, 
