@@ -13,15 +13,28 @@ app.use(compression())
 app.use(helmet())
 app.use(cors())
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, PATCH, DELETE, OPTIONS');
-  next();
-});
-
 const getMetrics = (request, response) => {
+
+  if(request.query.url){
+    getMetricsByUrl(request.query.url, response)
+  }
+  else{
+    getAllMetrics(response)
+  }
+
+}
+
+const getAllMetrics = (response) => {
   pool.query('SELECT * FROM perf_metrics', (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  })
+}
+
+const getMetricsByUrl = (url, response) => {
+  pool.query("SELECT * FROM perf_metrics WHERE url='" + url + "'", (error, results) => {
     if (error) {
       throw error
     }
@@ -49,10 +62,8 @@ const addMetric = (request, response) => {
 }
 
 app
-  .route('/perf_metrics')
-  // GET endpoint
+  .route('/perf_metrics')  
   .get(getMetrics)
-  // POST endpoint
   .post(addMetric)
 
 // Start server
