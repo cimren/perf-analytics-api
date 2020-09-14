@@ -62,12 +62,28 @@ const addMetric = (request, response) => {
   )
 }
 
+const deleteMetric = (request, response) => {
+  const id = request.params.id;
+  
+  pool.query(
+    "DELETE FROM perf_metrics WHERE id='" + id + "'",    
+    (error) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).json({status: 'success', message: 'Data deleted.'})
+    },
+  )
+}
+
 app
   .route('/perf_metrics')  
   .get(getMetrics)
   .post(addMetric)
 
+app.delete('/perf_metrics/:id', deleteMetric);
+
 // Start server
 app.listen(process.env.PORT || 3002, () => {
-  console.log(`Server listening`)
+  console.log(`Server is listening on port 3002`)
 })
